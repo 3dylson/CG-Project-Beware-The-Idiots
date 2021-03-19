@@ -1,5 +1,7 @@
 #include<iostream>
+using namespace std;
 
-int main() {
-	std::cout << "Hello Grupo 04!\n";
+void main() {
+	cout << "Hello Group 04!" << endl;
 }
+
