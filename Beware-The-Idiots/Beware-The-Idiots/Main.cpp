@@ -1,6 +1,8 @@
 #include <GL/glut.h>
 #include <Windows.h>
 
+#include "Sperm.h"
+
 
 void display();
 void reshape(GLsizei, GLsizei);
@@ -48,16 +50,19 @@ void display()
 
 	//em pixels
 	glPointSize(10.0);
-	//desenhar
-	glBegin(GL_POLYGON);
+	////desenhar
+	//glBegin(GL_POLYGON);
 
-	glVertex2f(x_position, y_position);
-	glVertex2f(x_position,-y_position);
-	glVertex2f(x_position+rsize,-y_position+rsize);
-	glVertex2f(x_position+rsize, y_position+rsize);
+	//glVertex2f(x_position, y_position);
+	//glVertex2f(x_position,-y_position);
+	//glVertex2f(x_position+rsize,-y_position+rsize);
+	//glVertex2f(x_position+rsize, y_position+rsize);
 
-	//
-	glEnd();
+	////
+	//glEnd();
+
+	Sperm s1;
+	s1.draw();
 	
 	
 	glutSwapBuffers();

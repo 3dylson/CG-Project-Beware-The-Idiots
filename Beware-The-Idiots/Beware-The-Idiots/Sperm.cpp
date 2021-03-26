@@ -33,3 +33,9 @@ void Sperm::draw()
 	glVertex2f(3.0, 1.0);
 	glEnd();
 }
+
+//void Sperm::update()
+//{
+//	isDead();
+//	
+//}

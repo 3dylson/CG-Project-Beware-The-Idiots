@@ -1,10 +1,11 @@
 ﻿#ifndef SPERM_H
 #define SPERM_H
-#include <vector>
+#include <DirectXMath.h>
 #include <GL/glut.h>
+#include "Dijkstra_Path_Algorithm.h"
 
 
-class Sperm
+class Sperm : public Dijkstra_Path_Algorithm
 {
 	GLfloat x;
 	GLfloat y;
@@ -21,13 +22,13 @@ public:
 
 	void draw();
 	
-	void spawn();
 	void update();
 	void moveForward(GLfloat speed);
-	void faceGo(std::vector<GLfloat> target, GLfloat rotSpeed);
+	void faceGo(DirectX::XMFLOAT3 target, GLfloat rotSpeed);
 	void takeDamage(GLfloat damage);
 	void isDead();
 	
+	 
 };
 
 
