@@ -139,13 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Dijkstra_Path_Algorithm.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Ovule.cpp" />
     <ClCompile Include="Sperm.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Dijkstra_Path_Algorithm.h" />
     <ClInclude Include="Ovule.h" />
     <ClInclude Include="Sperm.h" />
   </ItemGroup>

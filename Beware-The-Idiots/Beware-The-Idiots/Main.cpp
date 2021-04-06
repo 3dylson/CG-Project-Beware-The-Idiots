@@ -8,6 +8,8 @@ void display();
 void reshape(GLsizei, GLsizei);
 void timer(int);
 
+Sperm s1;
+
 void init()
 {
 	//gama de cores: [0,1]
@@ -35,10 +37,10 @@ int main(int argc,char**argv)
 	return 0;
 }
 
-GLfloat x_position = -10.0;
-GLfloat y_position = 1.0;
-GLsizei rsize = 2.0;
+//GLsizei rsize = 2.0;
 GLint state = 1;
+GLfloat x = 1.0;
+GLfloat y = 2.0;
 
 /**
  * \brief Função para exibir tudo
@@ -61,8 +63,12 @@ void display()
 	////
 	//glEnd();
 
-	Sperm s1;
-	s1.draw();
+	/*Sperm s1;
+	Sperm s2;*/
+	Ovule o1;
+	//s1.draw();
+	
+	s1.draw(x,y,o1);
 	
 	
 	glutSwapBuffers();
@@ -102,14 +108,14 @@ void timer(int)
 	switch (state)
 	{
 	case 1:
-		if (x_position < 8)
-			x_position += 0.15;
+		if (x < 8)
+			x += 0.15;
 		else
 			state = -1;
 		break;
 	case -1:
-		if (x_position > -10)
-			x_position -= 0.15;
+		if (x > -10)
+			x -= 0.15;
 		else state = 1;
 		break;
 

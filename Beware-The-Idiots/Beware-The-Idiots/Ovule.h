@@ -4,7 +4,7 @@
 
 class Ovule 
 {
-	GLint pa;
+	
 public:
-	GLint numOfVert;
+	
 };
