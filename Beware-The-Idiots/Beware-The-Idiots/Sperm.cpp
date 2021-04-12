@@ -1,4 +1,6 @@
 ﻿#include "Sperm.h"
+
+#include <vector>
 using namespace std;
 
 Sperm::Sperm(GLfloat x, GLfloat y, GLfloat flick, GLfloat flickTimer, GLfloat maxSpeed, GLfloat rotSpeed, GLfloat flickSpeed, GLfloat HP, GLfloat damage):
@@ -28,13 +30,16 @@ void Sperm::draw(GLfloat x, GLfloat y, Ovule target)
 {
 	this->x = x;
 	this->y = y;
-	this->target = target;	
+	this->target = target;
+
+	GLsizei rsize = 2.0;
 		
 	const GLfloat randomR = (double)rand() / (double)RAND_MAX;
 	const GLfloat randomG = (double)rand() / (double)RAND_MAX;
 	const GLfloat randomB = (double)rand() / (double)RAND_MAX;
 	
 	glColor3f(randomR, randomG, randomB); //Body color
+	glPointSize(10.0);
 	glBegin(GL_POLYGON);
 	glVertex2f(x, y);
 	glVertex2f(x+1.0, y);
@@ -46,12 +51,16 @@ void Sperm::draw(GLfloat x, GLfloat y, Ovule target)
 	glVertex2f(x+5.0, y+1.0);
 	glVertex2f(x+4.0, y+1.0);
 	glEnd();
+	
 
 	
 }
 
-//void Sperm::update()
-//{
-//	isDead();
-//	
-//}
+void Sperm::update()
+{
+	//isDead();
+	/*this->target = bait;*/
+	
+	
+	
+}
