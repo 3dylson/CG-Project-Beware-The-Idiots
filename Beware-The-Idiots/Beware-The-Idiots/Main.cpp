@@ -6,7 +6,7 @@
 
 #include "Sperm.h"
 
-#define PI 3.14159
+#define PI 3.14159265f
 #define GAME_SCREEN 0			          //Constant to identify background color
 #define MENU_SCREEN 3			
 #define MAX_SPERM  1000      
@@ -37,19 +37,66 @@ float xOne = 0, yOne = 0;				   //Ovule coordinates
 float xSperm[MAX_SPERM], ySperm[MAX_SPERM];//coordinates of sperms
 GLint spermAlive[MAX_SPERM];		       //check to see if sperm is killed
 
+GLfloat ovuleRadius = 0.5f;   // Radius of the Ovule
+GLfloat ovuleX = 0.0f;        // Ovule's center (x, y) position
+GLfloat ovuleY = 0.0f;
+
 
 bool mButtonPressed = false, startGame = false, gameOver = false;		//boolean values to check state of the game
 bool startScreen = true, nextScreen = false, previousScreen = false;
 bool gameQuit = false, instructionsGame = false, optionsGame = false;
-bool fullScreen = true;
+
 
 
 char highScore[100], ch;
 void display();
-void reshape(GLsizei, GLsizei);
 void timer(int);
 void backButton();
 void DrawLine();
+
+
+
+
+void DrawOvule()
+{
+	/*glPushMatrix();	*/
+	glLoadIdentity();              // Reset model-view matrix
+
+	glTranslatef(ovuleX, ovuleY, 0.0f);  // Translate to (xPos, yPos)
+   // Use triangular segments to form a circle
+	glBegin(GL_TRIANGLE_FAN);
+	glColor3f(1.0f, 0.0f, 1.0f);  // Blue
+	glVertex2f(0.0f, 0.0f);       // Center of circle
+	int numSegments = 100;
+	GLfloat angle;
+	for (int i = 0; i <= numSegments; i++) { // Last vertex same as first vertex
+		angle = i * 2.0f * PI / numSegments;  // 360 deg for all segments
+		glVertex2f(cos(angle) * ovuleRadius, sin(angle) * ovuleRadius);
+	}
+	glEnd();
+
+	/*glPopMatrix();*/
+}
+
+
+void initializeSpermArray() {
+	//random sperms index
+
+	for (int i = 0;i < MAX_SPERM;i++) {
+		randomSpermIndices[i] = rand() % MAX_SPERM_TYPES;
+		spermAlive[i] = true;
+	}
+
+	xSperm[0] = -(200 * MAX_SPERM) - 600;           //START LINE for sperm appearance
+
+	for (int i = 0;i < MAX_SPERM;i++) {				//ramdom appearance yIndex for each sperm
+		ySperm[i] = rand() % 600;
+		if (int(ySperm[i]) % 2)
+			ySperm[i] *= -1;
+		xSperm[i + 1] = xSperm[i] + 200;			//xIndex of sperm aligned with 200 units gap
+	}
+}
+
 
 
 #pragma region Menu
@@ -152,6 +199,7 @@ void GameScreenDisplay()
 	SetDisplayMode(GAME_SCREEN);
 	glScalef(2, 2, 0);
 	if (ovuleLife) {
+	    DrawOvule();
 		//SpermGenerate();
 		if (mButtonPressed) { DrawLine(); }
 	}
@@ -248,8 +296,6 @@ void GameOverScreen()
 	displayRasterText(-100, -170, 0.4, quit);
 
 }
-
-
 
 void InstructionsScreenDisplay()
 {
@@ -379,41 +425,28 @@ void init()
 	glMatrixMode(GL_MODELVIEW);
 }
 
-
-int main(int argc,char**argv)
+void timer(int)
 {
-	//FILE* fp;
-	//errno_t err = fopen_s(&fp, "HighScoreFile.txt", "r");      //check if HighScoreFile.txt exist if not create             
-	//if (err == 0)
-	//	fclose(fp);
-	//else
-	//	writeIntoFile();
-	
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
+	//chamar a função display
+	/*glutPostRedisplay();
+	glutTimerFunc(1000 / 60, timer, 1);
 
-	glutInitWindowPosition(90, 0);
-	glutInitWindowSize(1200, 700);	
-	
-	glutCreateWindow(title);
+	switch (state)
+	{
+	case 1:
+		if (x < 8)
+			x += 0.15;
+		else
+			state = -1;
+		break;
+	case -1:
+		if (x > -10)
+			x -= 0.15;
+		else state = 1;
+		break;
 
-	glutDisplayFunc(display);
-	glutPassiveMotionFunc(passiveMotionFunc);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glutIdleFunc(idleCallBack);
-	//glutReshapeFunc(reshape);
-	glutTimerFunc(0,timer,0);
-	glutMouseFunc(mouseClick);
-	glGetIntegerv(GL_VIEWPORT, m_viewport);
-	init();
-	SetDisplayMode(GAME_SCREEN);
-	
-	glutMainLoop();
-
-	return 0;
+	}*/
 }
-
-
 
 /**
  * \brief Função para exibir tudo
@@ -461,27 +494,44 @@ void display()
 	
 }
 
-void timer(int)
+
+int main(int argc,char**argv)
 {
-	//chamar a função display
-	/*glutPostRedisplay();
-	glutTimerFunc(1000 / 60, timer, 1);
+	//FILE* fp;
+	//errno_t err = fopen_s(&fp, "HighScoreFile.txt", "r");      //check if HighScoreFile.txt exist if not create             
+	//if (err == 0)
+	//	fclose(fp);
+	//else
+	//	writeIntoFile();
+	
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
 
-	switch (state)
-	{
-	case 1:
-		if (x < 8)
-			x += 0.15;
-		else
-			state = -1;
-		break;
-	case -1:
-		if (x > -10)
-			x -= 0.15;
-		else state = 1;
-		break;
+	glutInitWindowPosition(90, 0);
+	glutInitWindowSize(1200, 700);	
+	
+	glutCreateWindow(title);
 
-	}*/
+	glutDisplayFunc(display);
+	glutPassiveMotionFunc(passiveMotionFunc);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glutIdleFunc(idleCallBack);
+	//glutReshapeFunc(reshape);
+	glutTimerFunc(0,timer,0);
+	glutMouseFunc(mouseClick);
+	glGetIntegerv(GL_VIEWPORT, m_viewport);
+	init();
+	SetDisplayMode(GAME_SCREEN);
+	
+	glutMainLoop();
+
+	return 0;
 }
+
+
+
+
+
+
 
 
