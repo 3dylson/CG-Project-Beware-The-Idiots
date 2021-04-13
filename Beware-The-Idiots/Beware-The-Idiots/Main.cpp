@@ -351,6 +351,20 @@ void mouseClick(int buttonPressed, int state, int x, int y) {
 	glutPostRedisplay();
 }
 
+void passiveMotionFunc(int x, int y) {
+
+	//when mouse not clicked
+	mouseX = static_cast<float>(x) / (m_viewport[2] / 1200.0) - 600.0;  //converting screen resolution to ortho 2d spec
+	mouseY = -(static_cast<float>(y) / (m_viewport[3] / 700.0) - 350.0);
+
+
+	glutPostRedisplay();
+}
+
+void idleCallBack() {			//when no mouse or keybord pressed
+	glutPostRedisplay();
+}
+
 
 void init()
 {
@@ -384,11 +398,15 @@ int main(int argc,char**argv)
 	glutCreateWindow(title);
 
 	glutDisplayFunc(display);
-	glutReshapeFunc(reshape);
+	glutPassiveMotionFunc(passiveMotionFunc);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glutIdleFunc(idleCallBack);
+	//glutReshapeFunc(reshape);
 	glutTimerFunc(0,timer,0);
 	glutMouseFunc(mouseClick);
 	glGetIntegerv(GL_VIEWPORT, m_viewport);
 	init();
+	SetDisplayMode(GAME_SCREEN);
 	
 	glutMainLoop();
 
@@ -441,30 +459,6 @@ void display()
 	glLoadIdentity();
 	glutSwapBuffers();
 	
-}
-
-/**
- * \brief função para remodelar
- * \param w largura
- * \param h altura
- */
-void reshape( GLsizei w, GLsizei h)
-{
-	// Previnir divisão por zero
-	if (h == 0)
-		h = 1;
-	// Definir janela de exibição para as dimensões da janela
-	glViewport(0, 0, w, h);
-	// Reiniciar sistema de coordenadas
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	if (w <= h)
-		gluOrtho2D(-1200, 1200, -700 * h / w, 700);
-	else
-		gluOrtho2D(-1200, 1200 * w / h, -700, 700);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 }
 
 void timer(int)
