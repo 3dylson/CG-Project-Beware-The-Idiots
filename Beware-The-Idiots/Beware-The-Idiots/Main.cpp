@@ -23,17 +23,17 @@ char instruction1[] = "Left-Click on Sperm to kill Them";
 
 
 GLint m_viewport[4];
-int x, y;
-int i;
-int randomSpermIndices[100];
-int index;
+GLint x, y;
+GLint i;
+GLint randomSpermIndices[100];
+GLint index;
 int Score = 0;
 int ovuleLife = 124;
 int GameLvl = 1;
-float mouseX, mouseY;				       //Cursor coordinates;
-float spermAngle = 0, lineWidth = 1;
-float xOne = 0, yOne = 0;				   //Ovule coordinates
-float xSperm[MAX_SPERM], ySperm[MAX_SPERM];//coordinates of sperms
+GLfloat mouseX, mouseY;				       //Cursor coordinates;
+GLfloat spermAngle = 0, lineWidth = 1;
+GLfloat xOne = 0, yOne = 0;				   //Ovule coordinates
+GLfloat xSperm[MAX_SPERM], ySperm[MAX_SPERM];//coordinates of sperms
 GLint spermAlive[MAX_SPERM];		       //check to see if sperm is killed
 
 GLfloat ovuleRadius = 0.5f;   // Radius of the Ovule
@@ -66,7 +66,7 @@ void DrawOvule()
 	glBegin(GL_TRIANGLE_FAN);
 	glColor3f(1.0f, 0.0f, 1.0f);  // Blue
 	glVertex2f(0.0f, 0.0f);       // Center of circle
-	int numSegments = 100;
+	int numSegments = 50;
 	GLfloat angle;
 	for (int i = 0; i <= numSegments; i++) { // Last vertex same as first vertex
 		angle = i * 2.0f * PI / numSegments;  // 360 deg for all segments
@@ -75,25 +75,6 @@ void DrawOvule()
 	glEnd();
 
 	/*glPopMatrix();*/
-}
-
-
-void initializeSpermArray() {
-	//random sperms index
-
-	for (int i = 0;i < MAX_SPERM;i++) {
-		randomSpermIndices[i] = rand() % MAX_SPERM_TYPES;
-		spermAlive[i] = true;
-	}
-
-	xSperm[0] = -(200 * MAX_SPERM) - 600;           //START LINE for sperm appearance
-
-	for (int i = 0;i < MAX_SPERM;i++) {				//ramdom appearance yIndex for each sperm
-		ySperm[i] = rand() % 600;
-		if (int(ySperm[i]) % 2)
-			ySperm[i] *= -1;
-		xSperm[i + 1] = xSperm[i] + 200;			//xIndex of sperm aligned with 200 units gap
-	}
 }
 
 
@@ -195,10 +176,11 @@ void startScreenDisplay()
 
 void GameScreenDisplay()
 {
+	
 	SetDisplayMode(GAME_SCREEN);
 	glScalef(2, 2, 0);
 	if (ovuleLife) {
-	    DrawOvule();
+		
 		//SpermGenerate();
 		if (mButtonPressed) { DrawLine(); }
 	}
@@ -362,8 +344,8 @@ void DrawLine() {
 	float xMid = -(55 + 50) / 2.0;
 	float yMid = (25 + 35) / 2.0;
 
-	float mouseXEnd = -((-mouseX) + xOne);
-	float mouseYEnd = -((-mouseY) + yOne);
+	float mouseXEnd = mouseX;
+	float mouseYEnd = mouseY;
 	glLineWidth(5);   //----Line width
 
 	glColor3f(1, 0, 0);
@@ -376,7 +358,7 @@ void DrawLine() {
 
 void backButton() {
 	if (mouseX <= -450 && mouseX >= -500 && mouseY >= -275 && mouseY <= -250) {
-		glColor3f(0, 0, 1);
+		glColor3f(1, 1, 0);
 		if (mButtonPressed) {
 			mButtonPressed = false;
 			instructionsGame = false;
@@ -472,6 +454,7 @@ void display()
 
 			if (startGame) {
 				SetDisplayMode(GAME_SCREEN);
+				DrawOvule();
 				startScreen = false;
 
 			}
@@ -521,6 +504,7 @@ int main(int argc,char**argv)
 	glGetIntegerv(GL_VIEWPORT, m_viewport);
 	init();
 	SetDisplayMode(GAME_SCREEN);
+	
 	
 	glutMainLoop();
 
