@@ -4,7 +4,6 @@
 #include <cstring>
 #include <cstdio>
 
-#include "Sperm.h"
 
 #define PI 3.14159265f
 #define GAME_SCREEN 0			          //Constant to identify background color
