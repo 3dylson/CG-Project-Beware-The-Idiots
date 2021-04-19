@@ -36,7 +36,7 @@ GLfloat xOne = 0, yOne = 0;				   //Ovule coordinates
 GLfloat xSperm[MAX_SPERM], ySperm[MAX_SPERM];//coordinates of sperms
 GLint spermAlive[MAX_SPERM];		       //check to see if sperm is killed
 
-GLfloat ovuleRadius = 0.5f;   // Radius of the Ovule
+GLfloat ovuleRadius = 300.5f;   // Radius of the Ovule
 GLfloat ovuleX = 0.0f;        // Ovule's center (x, y) position
 GLfloat ovuleY = 0.0f;
 
@@ -452,13 +452,15 @@ void display()
 		if (gameQuit || startGame || optionsGame || instructionsGame) {
 			//startScreen = false;
 
-			if (startGame) {
+			/*if (startGame) {
 				SetDisplayMode(GAME_SCREEN);
 				DrawOvule();
 				startScreen = false;
 
 			}
 			else if (gameQuit)
+				exit(0);*/
+			if (gameQuit)
 				exit(0);
 
 		}
@@ -469,6 +471,12 @@ void display()
 	}
 
 	//Reset Scaling values
+
+	if (startGame) {
+		SetDisplayMode(GAME_SCREEN);
+		DrawOvule();
+		startScreen = false;
+	}
 	glScalef(1 / 2, 1 / 2, 0);
 	glFlush();
 	glLoadIdentity();
