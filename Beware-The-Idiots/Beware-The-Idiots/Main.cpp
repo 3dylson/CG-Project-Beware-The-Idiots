@@ -10,6 +10,7 @@
 #define MENU_SCREEN 3			
 #define MAX_SPERM  1000      
 #define MAX_SPERM_TYPES 2
+#define spermRotationSpeed 90
 
 char title[] = "Beware The Idiots";
 char start[] = "    Start";
@@ -37,6 +38,7 @@ GLfloat xSperm[MAX_SPERM], ySperm[MAX_SPERM]; //coordinates of sperms
 GLint spermAlive[MAX_SPERM];		       //check to see if sperm is killed
 int spermTranslationSpeed = 5;
 
+
 GLfloat xOne = 0, yOne = 0;				   //Ovule coordinates
 int ovuleLife = 124;
 GLfloat ovuleRadius = 300.5f;   // Radius of the Ovule
@@ -58,9 +60,32 @@ void timer(int);
 void backButton();
 void DrawLine();
 void displayRasterText(float x, float y, float z, char* stringToDisplay);
+void DrawSperm(int);
 
 
 
+
+void SpermGenerate()
+{
+	for (int i = 0; i < MAX_SPERM;i++) {
+		index = i;
+
+		if (mouseX <= (xSperm[i] / 2 + 20) && mouseX >= (xSperm[i] / 2 - 20) && mouseY >= (ySperm[i] / 2 - 20) && mouseY <= (ySperm[i] / 2 + 20) && mButtonPressed) {
+			if (spermAlive[i]) {   // IF ALIVE KILL SPERM
+				spermAlive[i] = 0;
+				Score++;
+				if (Score % 3 == 0) {
+					spermTranslationSpeed += 1;			//<--------------Rate of increase of game speed
+				}
+			}
+		}
+		xSperm[i] += spermTranslationSpeed;
+		if (spermAlive[i])             //sperm alive
+			DrawSperm(randomSpermIndices[i]);
+	}
+	spermAngle += spermRotationSpeed;
+	if (spermAngle > 360) spermAngle = 0;
+}
 
 
 void DisplayHealthBar() {
@@ -116,7 +141,7 @@ void DrawSperm(int SpermIndex)
 		glRotatef(spermAngle, 0, 0, 1);
 		glTranslated(0, 0, 0);
 		glColor3f(0.4f, 0.3f, 0.4f);
-		glScalef(35, 35, 1);
+		glScalef(3500, 3500, 1);
 		glBegin(GL_POLYGON);
 		glVertex2f(0.0, 1.0);
 		glVertex2f(1.0, 1.0);
@@ -280,8 +305,8 @@ void GameScreenDisplay()
 	if (ovuleLife) {
 		DrawOvule();
 		DisplayHealthBar();
-		//SpermGenerate();
-		if (mButtonPressed) { DrawLine(); }
+		SpermGenerate();
+		//if (mButtonPressed) { DrawLine(); }
 	}
 	else {
 		gameOver = true;
@@ -611,7 +636,8 @@ int main(int argc,char**argv)
 	glGetIntegerv(GL_VIEWPORT, m_viewport);
 	init();
 	SetDisplayMode(GAME_SCREEN);
-	
+
+	initializeSpermArray();
 	
 	glutMainLoop();
 
