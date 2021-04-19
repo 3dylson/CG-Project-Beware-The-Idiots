@@ -25,21 +25,26 @@ char instruction1[] = "Left-Click on Sperm to kill Them";
 GLint m_viewport[4];
 GLint x, y;
 GLint i;
-GLint randomSpermIndices[100];
 GLint index;
 int Score = 0;
-int ovuleLife = 124;
 int GameLvl = 1;
-GLfloat mouseX, mouseY;				       //Cursor coordinates;
-GLfloat spermAngle = 0, lineWidth = 1;
-GLfloat xOne = 0, yOne = 0;				   //Ovule coordinates
-GLfloat xSperm[MAX_SPERM], ySperm[MAX_SPERM];//coordinates of sperms
-GLint spermAlive[MAX_SPERM];		       //check to see if sperm is killed
 
+GLfloat mouseX, mouseY;				       //Cursor coordinates;
+
+GLint randomSpermIndices[100];
+GLfloat spermAngle = 0, lineWidth = 1;
+GLfloat xSperm[MAX_SPERM], ySperm[MAX_SPERM]; //coordinates of sperms
+GLint spermAlive[MAX_SPERM];		       //check to see if sperm is killed
+int spermTranslationSpeed = 5;
+
+GLfloat xOne = 0, yOne = 0;				   //Ovule coordinates
+int ovuleLife = 124;
 GLfloat ovuleRadius = 300.5f;   // Radius of the Ovule
 GLfloat ovuleX = 0.0f;        // Ovule's center (x, y) position
 GLfloat ovuleY = 0.0f;
+GLfloat xStart = 1200;				//Ovule health bar starting coodinate
 
+GLfloat a[][2] = { 0,-50, 70,-50, 70,70, -70,70 };
 
 bool mButtonPressed = false, startGame = false, gameOver = false;		//boolean values to check state of the game
 bool startScreen = true, nextScreen = false, previousScreen = false;
@@ -52,8 +57,101 @@ void display();
 void timer(int);
 void backButton();
 void DrawLine();
+void displayRasterText(float x, float y, float z, char* stringToDisplay);
 
 
+
+
+
+void DisplayHealthBar() {
+
+	glColor3f(1, 0, 0);
+	glBegin(GL_POLYGON);
+	glVertex2f(-xStart, 700);
+	glVertex2f(1200, 700);
+	glVertex2f(1200, 670);
+	glVertex2f(-xStart, 670);
+	glEnd();
+	char temp[40];
+	glColor3f(0, 0, 1);
+	sprintf_s(temp, "SCORE = %d", Score);
+	displayRasterText(-1100, 600, 0.4, temp);//<---display variable score ?
+	sprintf_s(temp, "  LIFE = %d", ovuleLife);
+	displayRasterText(800, 600, 0.4, temp);
+	sprintf_s(temp, "  LEVEL : %d", GameLvl);
+	displayRasterText(-100, 600, 0.4, temp);
+	glColor3f(1, 0, 0);
+}
+
+
+void DrawSperm(int SpermIndex)
+{
+	glPushMatrix();
+	glLoadIdentity();
+	switch (SpermIndex)                           //CHANGE INDEX VALUE FOR DIFFERENT SPERM VARIETY;
+	{
+	case 0:
+
+		glTranslated(xSperm[index], ySperm[index], 0);
+		glRotatef(spermAngle, 0, 0, 1);
+		glTranslated(0, 0, 0);
+		glColor3f(0.0f, 0.0f, 0.0f);
+		glScalef(35, 35, 1);
+		glBegin(GL_POLYGON);
+		glVertex2f(0.0, 1.0);
+		glVertex2f(1.0, 1.0);
+		glVertex2f(3.0, 1.0);
+		glVertex2f(4.0, 0.0);
+		glVertex2f(5.0, 0.0);
+		glVertex2f(6.0, 1.0);
+		glVertex2f(5.0, 2.0);
+		glVertex2f(4.0, 2.0);
+		glVertex2f(3.0, 1.0);
+		glEnd();
+		glLoadIdentity();
+
+		break;
+	case 1:
+		glTranslated(xSperm[index], ySperm[index], 0);
+		glRotatef(spermAngle, 0, 0, 1);
+		glTranslated(0, 0, 0);
+		glColor3f(0.4f, 0.3f, 0.4f);
+		glScalef(35, 35, 1);
+		glBegin(GL_POLYGON);
+		glVertex2f(0.0, 1.0);
+		glVertex2f(1.0, 1.0);
+		glVertex2f(3.0, 1.0);
+		glVertex2f(4.0, 0.0);
+		glVertex2f(5.0, 0.0);
+		glVertex2f(6.0, 1.0);
+		glVertex2f(5.0, 2.0);
+		glVertex2f(4.0, 2.0);
+		glVertex2f(3.0, 1.0);
+		glEnd();
+		glLoadIdentity();
+		break;
+	}
+	glPopMatrix();
+}
+
+
+void initializeSpermArray() {
+	//random sperms index
+
+	for (int i = 0;i < MAX_SPERM;i++) {
+		randomSpermIndices[i] = rand() % MAX_SPERM_TYPES;
+		spermAlive[i] = true;
+	}
+
+	xSperm[0] = -(200 * MAX_SPERM) - 600;           //START LINE for sperm appearance
+
+	for (int i = 0;i < MAX_SPERM;i++) {				//ramdom appearance yIndex for each sperm
+		ySperm[i] = rand() % 600;
+		if (int(ySperm[i]) % 2)
+			ySperm[i] *= -1;
+		xSperm[i + 1] = xSperm[i] + 200;			//xIndex of sperm aligned with 200 units gap
+	}
+}
 
 
 void DrawOvule()
@@ -180,7 +278,8 @@ void GameScreenDisplay()
 	SetDisplayMode(GAME_SCREEN);
 	glScalef(2, 2, 0);
 	if (ovuleLife) {
-		
+		DrawOvule();
+		DisplayHealthBar();
 		//SpermGenerate();
 		if (mButtonPressed) { DrawLine(); }
 	}
@@ -474,7 +573,7 @@ void display()
 
 	if (startGame) {
 		SetDisplayMode(GAME_SCREEN);
-		DrawOvule();
+		
 		startScreen = false;
 	}
 	glScalef(1 / 2, 1 / 2, 0);
