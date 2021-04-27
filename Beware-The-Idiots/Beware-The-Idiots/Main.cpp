@@ -61,9 +61,27 @@ void backButton();
 void DrawLine();
 void displayRasterText(float x, float y, float z, char* stringToDisplay);
 void DrawSperm(int);
+void GameOverScreen();
 
 
-
+void HandleKeyboard(unsigned char key, int x, int y)
+{
+	switch (key) {
+	case 81: //	Q
+	case 113: //	q
+	case 27: // esc
+		exit(0);
+		break; /*
+	case	80:	//	P
+	case	112: //	p
+		GameOverScreen();
+		//instructionsGame = false;
+		//startScreen = false;
+		//gameQuit=true;
+		break;*/
+	}
+	glutPostRedisplay();
+}
 
 void SpermGenerate()
 {
@@ -641,6 +659,7 @@ int main(int argc,char**argv)
 	 
 	initializeSpermArray();
 	
+	glutKeyboardFunc(HandleKeyboard);
 	glutMainLoop();
 
 	return 0;
