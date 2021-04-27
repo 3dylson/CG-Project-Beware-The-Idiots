@@ -32,20 +32,22 @@ int GameLvl = 1;
 
 GLfloat mouseX, mouseY;				       //Cursor coordinates;
 
+//----------------- Sperm variables
 GLint randomSpermIndices[100];
 GLfloat spermAngle = 0, lineWidth = 1;
 GLfloat xSperm[MAX_SPERM], ySperm[MAX_SPERM]; //coordinates of sperms
 GLint spermAlive[MAX_SPERM];		       //check to see if sperm is killed
-int spermTranslationSpeed = 5;
+int spermTranslationSpeed = 5;       
+//----------------------------------------------
 
-
+//------------------Ovule variables
 GLfloat xOne = 0, yOne = 0;				   //Ovule coordinates
 int ovuleLife = 124;
 GLfloat ovuleRadius = 300.5f;   // Radius of the Ovule
 GLfloat ovuleX = 0.0f;        // Ovule's center (x, y) position
 GLfloat ovuleY = 0.0f;
 GLfloat xStart = 1200;				//Ovule health bar starting coodinate
-
+//------------------------------------------------------
 GLfloat a[][2] = { 0,-50, 70,-50, 70,70, -70,70 };
 
 bool mButtonPressed = false, startGame = false, gameOver = false;		//boolean values to check state of the game
@@ -204,6 +206,17 @@ void initializeSpermArray() {
 	}
 }
 
+bool colision() {
+	if (spermAlive[i] && ((xOne >= (xSperm[i] / 2 - 70) && xOne <= (xSperm[i] / 2 + 70) && yOne >= (ySperm[i] / 2 - 18) && yOne <= (ySperm[i] / 2 + 53)) || (yOne <= (ySperm[i] / 2 - 20) && yOne >= (ySperm[i] / 2 - 90) && xOne >= (xSperm[i] / 2 - 40) && xOne <= (xSperm[i] / 2 + 40))))
+	{
+		spermAlive[i] = 0;
+		ovuleLife--;
+		return false;
+	}
+
+	return true;
+
+}
 
 void DrawOvule()
 {
@@ -333,6 +346,9 @@ void GameScreenDisplay()
 		DisplayHealthBar();
 		SpermGenerate();
 		//if (mButtonPressed) { DrawLine(); }
+		if (colision) {
+			ovuleLife--;
+		}
 	}
 	else {
 		gameOver = true;
@@ -665,7 +681,7 @@ int main(int argc,char**argv)
 
 	 
 	initializeSpermArray();
-	
+	colision();
 	glutKeyboardFunc(HandleKeyboard);
 	glutMainLoop();
 
