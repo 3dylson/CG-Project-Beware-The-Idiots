@@ -120,8 +120,10 @@ void DrawSperm(int SpermIndex)
 		glTranslated(xSperm[index], ySperm[index], 0);
 		glRotatef(spermAngle, 0, 0, 1);
 		glTranslated(0, 0, 0);
-		glColor3f(0.0f, 0.0f, 0.0f);
+		glColor3f(1.0f, 1.0f, 1.0f);
 		glScalef(35, 35, 1);
+		glutSolidSphere(300, 100, 100);
+		/*glScalef(30000, 30000, 1);
 		glBegin(GL_POLYGON);
 		glVertex2f(0.0, 1.0);
 		glVertex2f(1.0, 1.0);
@@ -132,16 +134,19 @@ void DrawSperm(int SpermIndex)
 		glVertex2f(5.0, 2.0);
 		glVertex2f(4.0, 2.0);
 		glVertex2f(3.0, 1.0);
-		glEnd();
-		glLoadIdentity();
+		glEnd();*/
+		
 
 		break;
 	case 1:
+		glColor3f(1.4f, 0.3f, 0.4f);
 		glTranslated(xSperm[index], ySperm[index], 0);
 		glRotatef(spermAngle, 0, 0, 1);
 		glTranslated(0, 0, 0);
-		glColor3f(0.4f, 0.3f, 0.4f);
-		glScalef(3500, 3500, 1);
+		glScalef(15, 20, 1);
+		glutSolidSphere(3010, 100, 100);
+		/*glTranslated(0, 0, 0);
+		glScalef(30000, 30000, 1);
 		glBegin(GL_POLYGON);
 		glVertex2f(0.0, 1.0);
 		glVertex2f(1.0, 1.0);
@@ -152,11 +157,13 @@ void DrawSperm(int SpermIndex)
 		glVertex2f(5.0, 2.0);
 		glVertex2f(4.0, 2.0);
 		glVertex2f(3.0, 1.0);
-		glEnd();
-		glLoadIdentity();
+		glEnd();*/
+
+		
 		break;
 	}
 	glPopMatrix();
+	//glutSwapBuffers();
 }
 
 
