@@ -74,7 +74,8 @@ void SpermGenerate()
 			if (spermAlive[i]) {   // IF ALIVE KILL SPERM
 				spermAlive[i] = 0;
 				Score++;
-				if (Score % 3 == 0) {
+				if (Score % 5 == 0) {
+					GameLvl++;
 					spermTranslationSpeed += 1;			//<--------------Rate of increase of game speed
 				}
 			}
@@ -234,7 +235,7 @@ void startScreenDisplay()
 
 	glLineWidth(1);
 
-	glColor3f(1, 1, 0);
+	glColor3f(1, 1,0);
 	glBegin(GL_POLYGON);				//START GAME PLOYGON
 	glVertex3f(-200, 300, 0.5);
 	glVertex3f(-200, 400, 0.5);
@@ -637,6 +638,7 @@ int main(int argc,char**argv)
 	init();
 	SetDisplayMode(GAME_SCREEN);
 
+	 
 	initializeSpermArray();
 	
 	glutMainLoop();
