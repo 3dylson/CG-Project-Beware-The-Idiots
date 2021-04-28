@@ -3,6 +3,8 @@
 #include <cmath>
 #include <cstring>
 #include <cstdio>
+#include <fstream>
+#include <iostream>
 
 
 #define PI 3.14159265f
@@ -64,6 +66,8 @@ void DrawLine();
 void displayRasterText(float x, float y, float z, char* stringToDisplay);
 void DrawSperm(int);
 void GameOverScreen();
+void initializeSpermArray();
+void GameScreenDisplay();
 
 
 void HandleKeyboard(unsigned char key, int x, int y)
@@ -87,7 +91,8 @@ void HandleKeyboard(unsigned char key, int x, int y)
 
 void SpermGenerate()
 {
-	for (int i = 0; i < MAX_SPERM;i++) {
+	
+		for (int i = 0; i < MAX_SPERM;i++) {
 		index = i;
 
 		if (mouseX <= (xSperm[i] / 2 + 20) && mouseX >= (xSperm[i] / 2 - 20) && mouseY >= (ySperm[i] / 2 - 20) && mouseY <= (ySperm[i] / 2 + 20) && mButtonPressed) {
@@ -207,12 +212,16 @@ void initializeSpermArray() {
 }
 
 bool colision() {
-	if (spermAlive[i] && ((xOne >= (xSperm[i] / 2 - 70) && xOne <= (xSperm[i] / 2 + 70) && yOne >= (ySperm[i] / 2 - 18) && yOne <= (ySperm[i] / 2 + 53)) || (yOne <= (ySperm[i] / 2 - 20) && yOne >= (ySperm[i] / 2 - 90) && xOne >= (xSperm[i] / 2 - 40) && xOne <= (xSperm[i] / 2 + 40))))
-	{
-		spermAlive[i] = 0;
-		ovuleLife--;
-		return false;
-	}
+
+	//for (int i = 0;MAX_SPERM;i++) {
+
+		if (spermAlive[i] && ((xOne >= (xSperm[i] / 2 - 70) && xOne <= (xSperm[i] / 2 + 70) && yOne >= (ySperm[i] / 2 - 18) && yOne <= (ySperm[i] / 2 + 53)) || (yOne <= (ySperm[i] / 2 - 20) && yOne >= (ySperm[i] / 2 - 90) && xOne >= (xSperm[i] / 2 - 40) && xOne <= (xSperm[i] / 2 + 40))))
+		{
+			spermAlive[i] = 0;
+			//ovuleLife--;
+			return false;
+		}
+	//}
 
 	return true;
 
@@ -224,6 +233,9 @@ void DrawOvule()
 	glLoadIdentity();              // Reset model-view matrix
 
 	glTranslatef(ovuleX, ovuleY, 0.0f);  // Translate to (xPos, yPos)
+
+	if (colision()) { ovuleLife--; }
+   
    // Use triangular segments to form a circle
 	glBegin(GL_TRIANGLE_FAN);
 	glColor3f(1.0f, 0.0f, 1.0f);  // Blue
@@ -346,9 +358,9 @@ void GameScreenDisplay()
 		DisplayHealthBar();
 		SpermGenerate();
 		//if (mButtonPressed) { DrawLine(); }
-		if (colision) {
+		/*if (colision) {
 			ovuleLife--;
-		}
+		}*/
 	}
 	else {
 		gameOver = true;
@@ -469,7 +481,28 @@ void InstructionsScreenDisplay()
 
 #pragma region FileScore
 void readFromFile() {
-	FILE* fp;
+
+	std::fstream score_file;
+	score_file.open("HighScoreFile.txt", std::ios::in);
+	int i = 0;
+	if(!score_file)
+	{
+		std::cout << "No such file";
+	}
+	else
+	{
+		while(true)
+		{
+			highScore[i++] >> ch;
+			if (score_file.eof())
+				break;
+		}
+		score_file.close();		
+	}
+	
+
+	
+	/*FILE* fp;
 	errno_t err = fopen_s(&fp, "HighScoreFile.txt", "r");
 	auto i = 0;
 	if (err == 0) {
@@ -478,11 +511,39 @@ void readFromFile() {
 		}
 		highScore[i] = '\0';
 	}
-	fclose(fp);
+	fclose(fp);*/
 }
 
 void writeIntoFile() {						//To write high score on to file
-	FILE* fp;
+
+	std::fstream score_file;
+	score_file.open("HighScoreFile.txt", std::ios::out);
+	auto i = 0;
+	char temp[40];
+	if(!score_file)
+	{
+		std::cout << "File not created!";
+	}
+	else
+	{
+		auto n = Score;
+		while (n) {
+			ch = (n % 10) + '0';
+			n /= 10;
+			temp[i++] = ch;
+		}
+		temp[i] = '\0';
+		_strrev(temp);
+		puts(temp);
+		if (temp[0] == '\0')
+			temp[i++] = '0', temp[i++] = '\0';
+		score_file << temp;
+		score_file.close();
+		
+	}
+
+
+	/*FILE* fp;
 	errno_t err = fopen_s(&fp, "HighScoreFile.txt", "r");
 	auto i = 0;
 	char temp[40];
@@ -500,7 +561,7 @@ void writeIntoFile() {						//To write high score on to file
 			temp[i++] = '0', temp[i++] = '\0';
 		fwrite(temp, sizeof(char) * i, i, fp);
 	}
-	fclose(fp);
+	fclose(fp);*/
 }
 #pragma endregion
 
@@ -653,6 +714,17 @@ void display()
 
 int main(int argc,char**argv)
 {
+	std::fstream score_file;
+	score_file.open("HighScoreFile.txt", std::ios::out);
+	if(!score_file)
+	{
+		score_file.close();
+	}
+	else
+	{
+		writeIntoFile();
+	}
+	
 	//FILE* fp;
 	//errno_t err = fopen_s(&fp, "HighScoreFile.txt", "r");      //check if HighScoreFile.txt exist if not create             
 	//if (err == 0)
