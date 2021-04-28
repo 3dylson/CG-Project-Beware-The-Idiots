@@ -89,7 +89,7 @@ void menu(int item)
 	{
 	case MENU_CONTINUE:
 	{
-		glColor3f(1, 0, 0);
+		
 	}break;
 	case MENU_QUIT:
 	{
@@ -112,17 +112,6 @@ void HandleKeyboard(unsigned char key, int x, int y)
 	case 27: // esc
 		exit(0);
 		break; 
-	case	80:	//	P
-	case	112: //	p
-	
-	// Associate a mouse button with menu
-		glutCreateMenu(menu);
-		glutAttachMenu(112);
-		//GameOverScreen();
-		//instructionsGame = false;
-		//startScreen = false;
-		//gameQuit=true;
-		break;
 	}
 	glutPostRedisplay();
 }
@@ -395,6 +384,11 @@ void GameScreenDisplay()
 		DrawOvule();
 		DisplayHealthBar();
 		SpermGenerate();
+		/*
+		if (!GLUT_RIGHT_BUTTON) {
+			Sleep(10000);
+		}*/
+
 		//if (mButtonPressed) { DrawLine(); }
 		/*if (colision) {
 			ovuleLife--;
@@ -793,7 +787,7 @@ int main(int argc,char**argv)
 	initializeSpermArray();
 	colision();
 	glutKeyboardFunc(HandleKeyboard);
-	glutMainLoop();
+	
 
 	
 
@@ -806,9 +800,13 @@ int main(int argc,char**argv)
 	
 
 	// Associate a mouse button with menu
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+	//
+	if (!GLUT_RIGHT_BUTTON) {
+		Sleep(10000);
+	}
 	
-	
-
+	glutMainLoop();
 
 	return 0;
 }
