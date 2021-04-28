@@ -6,8 +6,6 @@
 #include <fstream>
 #include <iostream>
 
-using namespace std;
-
 #define PI 3.14159265f
 #define GAME_SCREEN 0			          //Constant to identify background color
 #define MENU_SCREEN 3			
@@ -785,7 +783,6 @@ int main(int argc,char**argv)
 
 	 
 	initializeSpermArray();
-	colision();
 	glutKeyboardFunc(HandleKeyboard);
 	
 
@@ -802,9 +799,9 @@ int main(int argc,char**argv)
 	// Associate a mouse button with menu
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 	//
-	if (!GLUT_RIGHT_BUTTON) {
+	/*if (!GLUT_RIGHT_BUTTON) {
 		Sleep(10000);
-	}
+	}*/
 	
 	glutMainLoop();
 
