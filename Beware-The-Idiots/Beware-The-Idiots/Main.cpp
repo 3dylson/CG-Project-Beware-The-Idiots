@@ -3,7 +3,10 @@
 #include <cmath>
 #include <cstring>
 #include <cstdio>
+#include <iostream>
+#include <fstream>
 
+using namespace std;
 
 #define PI 3.14159265f
 #define GAME_SCREEN 0			          //Constant to identify background color
@@ -66,6 +69,39 @@ void DrawSperm(int);
 void GameOverScreen();
 
 
+
+// Menu items
+enum MENU_TYPE
+{
+	MENU_CONTINUE,
+	MENU_QUIT,
+};
+
+// Assign a default value
+MENU_TYPE show = MENU_CONTINUE;
+
+// Menu handling function definition
+void menu(int item)
+{
+	switch (item)
+	{
+	case MENU_CONTINUE:
+	{
+		glColor3f(1, 0, 0);
+	}break;
+	case MENU_QUIT:
+	{
+		exit(0);
+	}break;
+	
+	}
+
+	glutPostRedisplay();
+
+	return;
+}
+
+
 void HandleKeyboard(unsigned char key, int x, int y)
 {
 	switch (key) {
@@ -73,14 +109,18 @@ void HandleKeyboard(unsigned char key, int x, int y)
 	case 113: //	q
 	case 27: // esc
 		exit(0);
-		break; /*
+		break; 
 	case	80:	//	P
 	case	112: //	p
-		GameOverScreen();
+	
+	// Associate a mouse button with menu
+		glutCreateMenu(menu);
+		glutAttachMenu(112);
+		//GameOverScreen();
 		//instructionsGame = false;
 		//startScreen = false;
 		//gameQuit=true;
-		break;*/
+		break;
 	}
 	glutPostRedisplay();
 }
@@ -653,8 +693,10 @@ void display()
 
 int main(int argc,char**argv)
 {
-	//FILE* fp;
-	//errno_t err = fopen_s(&fp, "HighScoreFile.txt", "r");      //check if HighScoreFile.txt exist if not create             
+	fstream fp;
+	// err = fp.open("HighScoreFile.txt", ios::in);
+
+	//errno_t err = open_s(&fp, "HighScoreFile.txt", "r");      //check if HighScoreFile.txt exist if not create             
 	//if (err == 0)
 	//	fclose(fp);
 	//else
@@ -684,6 +726,21 @@ int main(int argc,char**argv)
 	colision();
 	glutKeyboardFunc(HandleKeyboard);
 	glutMainLoop();
+
+	
+
+	// Create a menu
+	glutCreateMenu(menu);
+
+	// Add menu items
+	glutAddMenuEntry("Continue", MENU_CONTINUE);
+	glutAddMenuEntry("Quit", MENU_QUIT);
+	
+
+	// Associate a mouse button with menu
+	
+	
+
 
 	return 0;
 }
