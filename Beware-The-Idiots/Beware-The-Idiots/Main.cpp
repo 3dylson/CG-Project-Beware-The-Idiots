@@ -9,7 +9,7 @@
 #define PI 3.14159265f
 #define GAME_SCREEN 0			          //Constant to identify background color
 #define MENU_SCREEN 3			
-#define MAX_SPERM  1000      
+#define MAX_SPERM  100      
 #define MAX_SPERM_TYPES 2
 #define spermRotationSpeed 90
 
@@ -43,13 +43,15 @@ int spermTranslationSpeed = 5;
 
 //------------------Ovule variables
 GLfloat xOne = 0, yOne = 0;				   //Ovule coordinates
-int ovuleLife = 124;
+int ovuleLife = 30;
 GLfloat ovuleRadius = 300.5f;   // Radius of the Ovule
 GLfloat ovuleX = 0.0f;        // Ovule's center (x, y) position
 GLfloat ovuleY = 0.0f;
 GLfloat xStart = 1200;				//Ovule health bar starting coodinate
 //------------------------------------------------------
 GLfloat a[][2] = { 0,-50, 70,-50, 70,70, -70,70 };
+GLint CI = 0;
+GLfloat LightColor[][3] = { 1,1,0,   0,1,1,   0,1,0 };
 
 bool mButtonPressed = false, startGame = false, gameOver = false;		//boolean values to check state of the game
 bool startScreen = true, nextScreen = false, previousScreen = false;
@@ -172,43 +174,46 @@ void DrawSperm(int SpermIndex)
 		glRotatef(spermAngle, 0, 0, 1);
 		glTranslated(0, 0, 0);
 		glColor3f(1.0f, 1.0f, 1.0f);
-		glScalef(35, 35, 1);
-		glutSolidSphere(300, 100, 100);
-		/*glScalef(30000, 30000, 1);
-		glBegin(GL_POLYGON);
-		glVertex2f(0.0, 1.0);
-		glVertex2f(1.0, 1.0);
-		glVertex2f(3.0, 1.0);
-		glVertex2f(4.0, 0.0);
-		glVertex2f(5.0, 0.0);
-		glVertex2f(6.0, 1.0);
-		glVertex2f(5.0, 2.0);
-		glVertex2f(4.0, 2.0);
-		glVertex2f(3.0, 1.0);
-		glEnd();*/
+		glScalef(35, 35, 1);		
+		glutSolidSphere(1, 9, 50);
+
+		//glLoadIdentity();
+		//glTranslated(xSperm[index], ySperm[index], 0);
+		//glRotatef(spermAngle, 0, 0, 1);
+		//glTranslated(spermAngle, 0, 0);
+		//glScalef(60, 10, 1);
+		////glBegin(GL_LINES);
+		////lineWidth(3);
+		////glVertex2f(0, 0);
+		////glVertex2f(-1, -1);
+		////glEnd();
+		//glutSolidSphere(1, 5, 50);//*/
+
+		
+		/*glLoadIdentity();
+		glTranslated(xSperm[index], ySperm[index], 0);
+		glRotatef(spermAngle, 0, 0, 1);
+		glTranslated(0, 0, 0);
+		glScalef(10, 60, 1);
+		glutSolidSphere(1, 5, 50);*/
 		
 
 		break;
 	case 1:
-		glColor3f(1.4f, 0.3f, 0.4f);
+		glColor3f(1.0f, 0.8f, 0.8f);
 		glTranslated(xSperm[index], ySperm[index], 0);
 		glRotatef(spermAngle, 0, 0, 1);
 		glTranslated(0, 0, 0);
 		glScalef(15, 20, 1);
-		glutSolidSphere(3010, 100, 100);
-		/*glTranslated(0, 0, 0);
-		glScalef(30000, 30000, 1);
-		glBegin(GL_POLYGON);
-		glVertex2f(0.0, 1.0);
-		glVertex2f(1.0, 1.0);
-		glVertex2f(3.0, 1.0);
-		glVertex2f(4.0, 0.0);
-		glVertex2f(5.0, 0.0);
-		glVertex2f(6.0, 1.0);
-		glVertex2f(5.0, 2.0);
-		glVertex2f(4.0, 2.0);
-		glVertex2f(3.0, 1.0);
-		glEnd();*/
+		glutSolidSphere(1, 9, 50);
+
+		glLoadIdentity();
+		glTranslated(xSperm[index], ySperm[index], 0);
+		glRotatef(spermAngle, 0, 0, 1);
+		glTranslated(0, 0, 0);
+		glScalef(40, 5, 1);
+		glutSolidSphere(1, 5, 50);
+		
 
 		
 		break;
@@ -259,7 +264,7 @@ void DrawOvule()
 
 	glTranslatef(ovuleX, ovuleY, 0.0f);  // Translate to (xPos, yPos)
 
-	if (colision()) { ovuleLife--; }
+	//if (colision()) { ovuleLife--; }
    
    // Use triangular segments to form a circle
 	glBegin(GL_TRIANGLE_FAN);
@@ -463,7 +468,7 @@ void GameOverScreen()
 			gameOver = false;
 			mButtonPressed = false;
 			//initializeSpermArray();
-			ovuleLife = 124;
+			ovuleLife = 30;
 			Score = 0;
 			GameLvl = 1;
 			GameScreenDisplay();
@@ -642,11 +647,11 @@ void passiveMotionFunc(int x, int y) {
 	mouseY = -(static_cast<float>(y) / (m_viewport[3] / 700.0) - 350.0);
 
 
-	glutPostRedisplay();
+	display();
 }
 
 void idleCallBack() {			//when no mouse or keybord pressed
-	glutPostRedisplay();
+	display();
 }
 
 
@@ -684,6 +689,14 @@ void timer(int)
 		break;
 
 	}*/
+}
+
+void UpdateColorIndex(int value)
+{
+	CI = (CI + 1) % 3;			//Color Index swapping to have rotation effect
+	display();
+	glutTimerFunc(250, UpdateColorIndex, 0);
+	
 }
 
 /**
@@ -775,7 +788,7 @@ int main(int argc,char**argv)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glutIdleFunc(idleCallBack);
 	//glutReshapeFunc(reshape);
-	glutTimerFunc(0,timer,0);
+	//glutTimerFunc(0,timer,0);
 	glutMouseFunc(mouseClick);
 	glGetIntegerv(GL_VIEWPORT, m_viewport);
 	init();
