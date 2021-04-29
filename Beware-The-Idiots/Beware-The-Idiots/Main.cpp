@@ -118,6 +118,13 @@ void HandleKeyboard(unsigned char key, int x, int y)
 
 void SpermGenerate()
 {
+	//If the last sperm hits the end of screen then regenerate 
+	if (xSperm[0]>=1200)
+	{
+		GameLvl++;
+		initializeSpermArray();
+		GameScreenDisplay();
+	}
 	
 		for (int i = 0; i < MAX_SPERM;i++) {
 		index = i;
@@ -127,7 +134,6 @@ void SpermGenerate()
 				spermAlive[i] = 0;
 				Score++;
 				if (Score % 5 == 0) {
-					GameLvl++;
 					spermTranslationSpeed += 1;			//<--------------Rate of increase of game speed
 				}
 			}
@@ -145,19 +151,19 @@ void DisplayHealthBar() {
 
 	glColor3f(1, 0, 0);
 	glBegin(GL_POLYGON);
-	glVertex2f(-xStart, 700);
+	glVertex2f(-2100, 700);
 	glVertex2f(1200, 700);
 	glVertex2f(1200, 670);
-	glVertex2f(-xStart, 670);
+	glVertex2f(-2100, 670);
 	glEnd();
 	char temp[40];
 	glColor3f(0, 0, 1);
 	sprintf_s(temp, "SCORE = %d", Score);
-	displayRasterText(-1100, 600, 0.4, temp);//<---display variable score ?
+	displayRasterText(-2000, 600, 0.4, temp);//<---display variable score ?
 	sprintf_s(temp, "  LIFE = %d", ovuleLife);
-	displayRasterText(800, 600, 0.4, temp);
-	sprintf_s(temp, "  LEVEL : %d", GameLvl);
 	displayRasterText(-100, 600, 0.4, temp);
+	sprintf_s(temp, "  LEVEL : %d", GameLvl);
+	displayRasterText(-1000, 600, 0.4, temp);
 	glColor3f(1, 0, 0);
 }
 
@@ -243,28 +249,30 @@ void initializeSpermArray() {
 
 bool colision() {
 
-	//for (int i = 0;MAX_SPERM;i++) {
+	for (int i = 0;MAX_SPERM;i++) {
 
-		if (spermAlive[i] && ((xOne >= (xSperm[i] / 2 - 70) && xOne <= (xSperm[i] / 2 + 70) && yOne >= (ySperm[i] / 2 - 18) && yOne <= (ySperm[i] / 2 + 53)) || (yOne <= (ySperm[i] / 2 - 20) && yOne >= (ySperm[i] / 2 - 90) && xOne >= (xSperm[i] / 2 - 40) && xOne <= (xSperm[i] / 2 + 40))))
+		if (spermAlive[i] && xSperm[i] >= 850 && ySperm[i] == 0)
+			
 		{
 			spermAlive[i] = 0;
 			//ovuleLife--;
-			return false;
+			return true;
 		}
-	//}
+	return false;
+	}
 
-	return true;
 
 }
 
 void DrawOvule()
 {
-	/*glPushMatrix();	*/
+	glPushMatrix();	
 	glLoadIdentity();              // Reset model-view matrix
 
-	glTranslatef(ovuleX, ovuleY, 0.0f);  // Translate to (xPos, yPos)
+	//glTranslatef(ovuleX, ovuleY, 0.0f);  // Translate to (xPos, yPos)
+	glTranslatef(900, ovuleY, 0.0f);  // Translate to (xPos, yPos)
 
-	//if (colision()) { ovuleLife--; }
+	if (colision()) { ovuleLife--; }
    
    // Use triangular segments to form a circle
 	glBegin(GL_TRIANGLE_FAN);
@@ -808,13 +816,16 @@ int main(int argc,char**argv)
 	glutAddMenuEntry("Continue", MENU_CONTINUE);
 	glutAddMenuEntry("Quit", MENU_QUIT);
 	
-
+	
 	// Associate a mouse button with menu
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 	//
-	/*if (!GLUT_RIGHT_BUTTON) {
-		Sleep(10000);
-	}*/
+	//if (GLUT_RIGHT_BUTTON) {
+	//	startGame = false;
+	//	gameOver = false;
+	//	
+	//	//Sleep(10000);
+	//}
 	
 	glutMainLoop();
 
